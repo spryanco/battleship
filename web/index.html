@@ -1,0 +1,187 @@
+<html>
+    
+<head>
+    <title>Battleship | Online Multiplayer</title>
+    <link href="style.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,600,800" rel="stylesheet">
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/addons/p5.dom.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Battleship Scripts -->
+    <script src="game.js"></script>
+</head>
+
+<body>
+    <div class="header">
+        <a href="#default" class="logo"><span class="logo-battle">Battle</span><span class="logo-ship">ship</span><span class="player_counter" id="player_counter">0 playing</span></a>
+        <div class="header-right">
+            <a href="#default" id="roomID" class="code"></a>
+        </div>
+    </div>
+    <div class="notifBar"><span id="notifBarMessage" class=""></span></div>
+    <script>
+        var playerID = null;
+        var currentRoom = null;
+        var firstPlayer = false;
+        var nickname = "";
+        var socket = io.connect("https://battleship-sryan.c9users.io/");
+
+        function setup() {
+            var playableCanvas = createCanvas(1110, 520);
+            playableCanvas.parent("player-canvas");
+            readyGame();
+        }
+        
+        function restart() {
+            clear();
+            currentRoom = null;
+            firstPlayer = false;
+            readyGame();
+        }
+
+        function draw() {
+            mouseOverBox(mouseX, mouseY);
+        }
+
+        socket.on("gridHit", function(data) {
+            print("gridHit received");
+            gridHitByOpponent(data.number);
+        })
+
+        socket.on("gridHitResponse", function(data) {
+            gridHitResponseReceived(data);
+        })
+
+        socket.on("connectedToRoom", function(data) {
+            currentRoom = data.roomID;
+            document.getElementById("roomID").innerHTML = data.roomID;
+
+            firstPlayer = (data.player1ID == playerID);
+
+            if (firstPlayer) {
+                alertToPlayer("You are Player 1");
+            }
+
+            alertToPlayer("Connected you to a room [ID-" + data.roomID + "]");
+            startGame();
+        })
+
+        socket.on("playerCreated", function(data) {
+            playerID = data;
+            print(playerID + " created");
+        });
+
+        socket.on("updateCount", function(data) {
+            document.getElementById("player_counter").innerHTML = data + " playing";
+        })
+
+        socket.on("chatMessage", function(data) {
+            $('#messages').append($('<li>').text(data.nickname + " : " + data.message));
+            var elem = document.getElementById('messages');
+            elem.scrollTop = elem.scrollHeight;
+        })
+        
+        socket.on("roomTerminated", function(reason) {
+            chatAlert("Match terminated: " + reason);
+            restart();
+        })
+
+        function mouseClicked() {
+            hitOpponent(mouseX, mouseY);
+        }
+
+        function mouseDragged() {
+            socket.emit("newMouseMove", {
+                x: mouseX,
+                y: mouseY
+            })
+        }
+
+        function joinQueue() {
+            socket.emit("joinGameQueue", playerID);
+            alertToPlayer("Searching for a game...");
+        }
+
+        function emitToRoom(name, data) {
+            print("Emitting data to room for : " + name + " with roomID " + currentRoom);
+            socket.emit('emitGameData', {
+                room: currentRoom,
+                name: name,
+                data: data
+            });
+        }
+
+        function alertToPlayer(message) {
+            popupAlert(message);
+            chatAlert(message);
+        }
+        
+        function chatAlert(message) {
+            message = "[-] " + message;
+            
+            $('#messages').append($('<li class="log">').text(message));
+            
+            var elem = document.getElementById('messages');
+            elem.scrollTop = elem.scrollHeight;
+        }
+
+        function popupAlert(message) {
+            document.getElementById("notifBarMessage").innerHTML = message;
+
+            $(".notifBar").toggleClass("active");
+            $("#notifBarMessage").toggleClass("notifMessage");
+
+            setTimeout(function() {
+                $(".notifBar").removeClass("active");
+                $("#notifBarMessage").removeClass("notifMessage");
+            }, 3000);
+        }
+
+        $(document).ready(function() {
+            $('#chat').submit(function(e) {
+                e.preventDefault();
+                print("Submitting form");
+                var nick = $('#nickname').val();
+
+                if (nick != '') {
+                    nickname = nick;
+
+                    $('#messages').append($('<li>').text(nickname + " : " + $('#msg').val()));
+                } else {
+                    $('#messages').append($('<li>').text("You: " + $('#msg').val()));
+                }
+
+                emitToRoom('chatMessage', {
+                    message: $('#msg').val(),
+                    nickname: (nickname != "" ? nickname : "Opponent")
+                });
+                
+                $('#msg').val('');
+
+                var elem = document.getElementById('messages');
+                elem.scrollTop = elem.scrollHeight;
+
+                return false;
+            });
+        });
+    </script>
+    <div class="player-canvas-container">
+        <div id="player-canvas"></div>
+        <div id="interface-panel">
+            <input type="button" class="battlebtn" id="match-btn" value="Find Game" onclick="playerJoinQueue()" />
+            <input type="button" class="battlebtn" id="invite-btn" value="Invite Friend" onclick="e" />
+        </div>
+    </div>
+    <div class="player-chat">
+        <ul id="messages"></ul>
+        <form id="chat" action="">
+            <input id="nickname" autocomplete="off" placeholder="Nickname" />
+            <input id="msg" autocomplete="off" placeholder="Write a chat message" />
+            <button id="chat-submit-btn">Send</button>
+        </form>
+    </div>
+</body>
+
+</html>

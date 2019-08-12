@@ -1,0 +1,220 @@
+body {
+  background: #F0F0F0 !important;
+  margin: 0;
+}
+
+html,body {
+  height: 100%;
+}
+
+.header {
+  overflow: hidden;
+  background-color: #222;
+  padding: 0px 0px;
+  margin-top: -10px;
+  border: 5px solid transparent;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  border-image: linear-gradient(to left, #743ad5, #d53a9d);
+  border-image-slice: 1;
+  border-width: 10px;
+}
+
+.battlebtn {
+  background: black;
+  font-weight: 600;
+  font-size: 20px;
+  min-width: 200px;
+  color: white;
+  height: 50px;
+  border: none;
+  font-family: 'Montserrat', sans-serif;
+  border-width: 3px;
+  border-image-slice: 1;
+  border-radius: 3px;
+  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, .2) !important;
+  margin-bottom: 10px;
+  transition: 0.3s;
+}
+
+#match-btn {
+  background-color: #00ae17;
+}
+
+#invite-btn {
+  background-color: #6c56df;
+}
+
+.battlebtn:hover {
+  box-shadow: inset 0 -100px 0 rgba(0, 0, 0, .2) !important;
+}
+
+#interface-panel {
+  left: 58.6%;
+  top: 25%;
+  width: 200px;
+  position: absolute;
+  background: #00000096;
+  border: 10px solid #4d4d4da3;
+  padding: 20px;
+  border-radius: 50px;
+  padding-top: 100px;
+  padding-bottom: 100px;
+}
+
+.log {
+  color: gray;
+  font-size: 70%;
+  margin: 5px;
+  font-size: 16px;
+  text-align: center;
+}
+
+.player-canvas-container {
+  width: 100%;
+}
+
+#player-canvas {
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.player-chat {
+  border-top: 10px solid #c3c3c3;
+  background: #f0f0f0;
+  width: 100%;
+  display: inline-block;
+  position: absolute;
+  top: 565;
+  min-height: 20%;
+}
+
+#messages {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: scroll;
+  height: 115px;
+  background: white;
+  font-family: sans-serif;
+  border-bottom: 10px solid #c3c3c3;
+}
+
+#messages li {
+  padding: 5px 10px;
+}
+
+#messages li:nth-child(odd) {
+  background: #eee;
+}
+
+#msg {
+  width: 60%;
+  padding: 10px;
+  font-size: 16px;
+}
+
+#nickname {
+  width: 10%;
+  margin: 0;
+  padding: 10px;
+  font-size: 16px;
+}
+
+#chat-submit-btn {
+  height: 42px;
+  padding: 12px;
+  border: 2px solid #00ae17;
+  margin-bottom: -10px;
+  color: white;
+  background: #00ae17;
+}
+
+
+.header a {
+  float: left;
+  color: white;
+  text-align: center;
+  padding: 12px;
+  text-decoration: none;
+  font-size: 18px;
+  line-height: 75px;
+}
+
+.header a.logo {
+  font-size: 35px;
+  font-weight: 400;
+  color: white;
+  background: black;
+  border-right: 8px dashed #222;
+  height: 75px;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.header a.code {
+  font-size: 30px;
+  font-weight: 800;
+  color: white;
+  background: black;
+  height: 75px;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.player_counter {
+  font-size: 14px;
+  font-weight: 400;
+  position: absolute;
+  left: 147px;
+  top: 32;
+  white-space: nowrap;
+  color: #ff3cbf;
+}
+
+.notifMessage::before {
+  content: attr(data-before);
+  display: block;
+  margin-top: 15px;
+}
+
+.notifBar {
+  width: 100%;
+  height: 0;
+  position: absolute;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 20px;
+  box-sizing: border-box;
+  color: white;
+  text-align: center;
+  background: rgba(0,0,0,.6);
+  overflow: hidden;
+  box-sizing: border-box;
+  transition: height .2s;
+  margin-bottom: 50px;
+}
+
+.active {
+  height: 50px;
+}
+
+.logo-battle {
+  font-weight: 600;
+  padding: 3px;
+  border: 3px solid #d33a9e;
+  border-radius: 6px;
+  background: #d03aa0;
+}
+
+.logo-ship {
+  padding-left: 5px;
+}
+
+
+.header-right {
+  float: right;
+}
